@@ -9,8 +9,9 @@ from app.db.area.crud import (
     get_area_by_id,
     get_area_by_name,
     get_areas,
+    get_area_and_subareas
 )
-from app.db.area.schemas import Area, AreaCreate, AreaEdit
+from app.db.area.schemas import Area, AreaCreate, AreaEdit, AreasAndSubareas
 from app.core.auth import get_current_active_pessoa
 
 area_router = r = APIRouter()
@@ -18,7 +19,7 @@ area_router = r = APIRouter()
 
 @r.get(
     "/areas",
-    response_model=t.List[Area],
+    response_model=t.List[AreasAndSubareas],
     response_model_exclude_none=True,
 )
 async def areas_list(
@@ -53,7 +54,7 @@ async def area_details_id(
     return area
 
 @r.get(
-    "/area/name/{area_name}",
+    "/areas/name/{area_name}",
     response_model=Area,
     response_model_exclude_none=True,
 )
@@ -83,7 +84,7 @@ async def area_create(
 
 
 @r.put(
-    "/areas",
+    "/areas/{area_id}",
     response_model=AreaEdit,
     response_model_exclude_none=True,
 )
@@ -101,7 +102,7 @@ async def area_edit(
 
 
 @r.delete(
-    "/areas",
+    "/areas/{area_id}",
     response_model=Area,
     response_model_exclude_none=True,
 )
@@ -115,4 +116,4 @@ async def area_delete(
     """
     Delete an existing area
     """
-    return delete_area(db, area_id)
+    return await delete_area(db, area_id)

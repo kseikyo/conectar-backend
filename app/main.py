@@ -22,7 +22,10 @@ app = FastAPI(
     title=config.PROJECT_NAME, docs_url="/api/docs", openapi_url="/api"
 )
 
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+app.mount("/api/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+# Go to localhost:8000/api/coverage/index.html to see coverage report
+app.mount("/api/coverage", StaticFiles(directory="htmlcov"), name="htmlcov")
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):

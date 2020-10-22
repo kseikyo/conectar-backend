@@ -5,7 +5,6 @@ from app.db.area.schemas import PessoaAreaCreate
 from app.db.habilidade.schemas import PessoaHabilidadeCreate 
 
 class PessoaBase(BaseModel):
-    senha: str
     data_nascimento: t.Optional[date] = None
     email: str
     ativo: bool = True
@@ -16,12 +15,14 @@ class PessoaBase(BaseModel):
     aliado: t.Optional[bool] = None
     foto_perfil: t.Optional[str] = None
     habilidades: t.Optional[t.List[PessoaHabilidadeCreate]] = None
+    areas: t.Optional[t.List[PessoaAreaCreate]] = None
 
 class PessoaOut(PessoaBase):
     pass
 
 
 class PessoaCreate(PessoaBase):
+    senha: str
     superusuario: t.Optional[bool] = False
     usuario: str
 
@@ -32,8 +33,6 @@ class PessoaCreate(PessoaBase):
 class PessoaEdit(PessoaBase):
     senha: t.Optional[str] = None
     email: t.Optional[str] = None
-    areas: t.Optional[t.List[PessoaAreaCreate]] = None
-    habilidades: t.Optional[t.List[PessoaHabilidadeCreate]] = None
 
 
     class Config:
@@ -44,8 +43,7 @@ class Pessoa(PessoaBase):
     id: int
     data_criacao: date
     data_atualizacao: t.Optional[date] = None
-    areas: t.Optional[t.List[PessoaAreaCreate]] = None
-    
+
     class Config:
         orm_mode = True
 

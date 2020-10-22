@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 import typing as t
 
-from db import models
+from app.db import models
 from . import schemas
 from app.core.security.passwords import get_password_hash
 
@@ -51,17 +51,70 @@ async def get_area_by_name(db: Session, area_name: int) -> schemas.Area:
     return area
 
 
-async def get_areas(
-    db: Session, skip: int = 0, limit: int = 100
-) -> t.List[schemas.Area]:
+async def get_area_and_subareas(
+    db: Session,
+    area_id: int
+):
     '''
-        Get all instances of area
+        Get the area and all its subareas from an id.
+
+        Gets all subareas by filtering all Areas where area_pai_id are
+        equal to the passed id. Then it gets the area object from the id itself
+        and map it on required format.
+
+        Args:
+        db: Database Local Session. sqlalchemy.orm.sessionmaker instance.
+        area_id: Integer representing the area id.
 
         Returns:
-        A list of Area objects.
+        A dict on this format:
+        {
+            "area": {
+                "descricao": "Geografia",
+                "id": 38
+            },
+            "subareas": [{
+                "descricao": "Topografia",
+                "id": 39,
+                "area_pai_id": 38
+            }]
+        }
+    '''
+    areas = db.query(models.Area).filter(models.Area.area_pai_id == area_id).all()
+    parent = await get_area_by_id(db, area_id)
+    parent_and_subareas = {"area": parent, "subareas": areas}
+    return parent_and_subareas
+
+async def get_areas(
+    db: Session
+):
+    '''
+        Get all instances of areas and its subareas
+
+        Firstly get all areas on top of tree, then creates a list
+        containing all areas and subareas of each node
+
+        Returns:
+        A list containing objects with area and subareas, for example:
+        [
+            {
+                "area": {
+                    "descricao": "Geografia",
+                    "id": 38
+                },
+                "subareas": [{
+                    "descricao": "Topografia",
+                    "id": 39,
+                    "area_pai_id": 38
+                }]
+            },
+        ]
 
     '''
-    return db.query(models.Area).offset(skip).limit(limit).all()
+    areas = db.query(models.Area).filter(models.Area.area_pai_id == None).all()
+    areasAndSubareas = [await get_area_and_subareas(db, area.id) for area in areas]
+                
+    return areasAndSubareas
 
 
 async def create_area(db: Session, area: schemas.AreaCreate) -> schemas.Area:
@@ -81,8 +134,8 @@ async def create_area(db: Session, area: schemas.AreaCreate) -> schemas.Area:
     return db_area
 
 
-def delete_area(db: Session, area_id: int):
-    area = get_area_by_id(db, area_id)
+async def delete_area(db: Session, area_id: int):
+    area = await get_area_by_id(db, area_id)
     if not area:
         raise HTTPException(
             status.HTTP_404_NOT_FOUND, detail="area não encontrada"
@@ -131,10 +184,9 @@ async def edit_area(
         raise HTTPException(
             status.HTTP_404_NOT_FOUND, detail="area não encontrada"
         )
-    print(db_area)
 
     update_data = area.dict(exclude_unset=True)
-    print(update_data)
+    
     for key, value in update_data.items():
         setattr(db_area, key, value)
 
