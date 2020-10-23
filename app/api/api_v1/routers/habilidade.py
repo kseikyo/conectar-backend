@@ -59,6 +59,7 @@ async def habilidades_details_name(
 
 @r.post(
     "/habilidades",
+
     response_model=Habilidades,
     response_model_exclude_none=True,
 )
