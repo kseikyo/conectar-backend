@@ -23,7 +23,7 @@ from app.core.auth import (
 habilidades_router = r = APIRouter()
 
 @r.get(
-    "/habilidades",
+    "/habilidades/",
     response_model=t.List[Habilidades],
     response_model_exclude_none=True,
 )
@@ -41,7 +41,7 @@ async def habilidades_list(
     return habilidades
 
 @r.get(
-    "/habilidades/name/{habilidades_name}",
+    "/habilidade/name/{habilidades_name}",
     response_model=Habilidades,
     response_model_exclude_none=True,
 )
@@ -58,7 +58,7 @@ async def habilidades_details_name(
     return habilidades 
 
 @r.post(
-    "/habilidades",
+    "/habilidade/pessoa",
     response_model=Habilidades,
     response_model_exclude_none=True,
 )
@@ -69,12 +69,12 @@ async def habilidades_create(
     current_pessoa=Depends(get_current_active_pessoa),
 ):
     """
-    Create a new habilidades 
+    Create a new habilidade 
     """
     return create_habilidades(db, habilidades, current_pessoa.id)
 
 @r.put(
-    "/habilidades/{habilidade_id}",
+    "/habilidades/pessoa/{habilidade_id}",
     response_model=Habilidades,
     response_model_exclude_none=True,
 )
@@ -86,12 +86,12 @@ async def habilidade_edit(
     current_pessoa=Depends(get_current_active_pessoa),
 ):
     """
-    Update existing habilidades
+    Update existing habilidade
     """
     return edit_habilidades(db, habilidade_id, habilidades)
 
 @r.delete(
-    "/habilidades/{habilidade_id}",
+    "/habilidade/pessoa/{habilidade_id}",
     response_model=Habilidades,
     response_model_exclude_none=True,
 )

@@ -5,7 +5,7 @@ import typing as t
 from app.db import models
 from app.db.habilidade import schemas
 
-async def get_habilidades_by_id(
+def get_habilidades_by_id(
     db: Session, habilidades_id: int
 ) -> schemas.Habilidades:
     habilidades = (
@@ -25,7 +25,7 @@ def get_habilidades(
 ) -> t.List[schemas.Habilidades]:
     return db.query(models.Habilidades).offset(skip).limit(limit).all()
 
-async def get_habilidade_by_name(db: Session, habilidades_name: int) -> schemas.Habilidades:
+def get_habilidade_by_name(db: Session, habilidades_name: int) -> schemas.Habilidades:
     '''
         Get a single instance of habilidades from its name
 
