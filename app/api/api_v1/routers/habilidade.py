@@ -54,7 +54,9 @@ async def habilidades_details_name(
     """
     Get any habilidades details by its name
     """
-    habilidades =  get_habilidade_by_name(db, habilidades_name)
+
+    habilidades = get_habilidade_by_name(db, habilidades_name)
+
     return habilidades 
 
 @r.post(
