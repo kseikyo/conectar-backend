@@ -52,7 +52,7 @@ async def pessoa_projeto_create(
 
 @r.get(
     "/pessoa_projeto/projeto/{projeto_id}",
-    response_model=PessoaProjeto,
+    response_model=t.List[PessoaProjeto],
     response_model_exclude_none=True,
 )
 async def get_all_pessoa_projeto_by_projeto(
