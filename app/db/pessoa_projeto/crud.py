@@ -36,7 +36,6 @@ async def get_pessoa_projeto_by_projeto(
         .filter(models.Projeto.id == id_projeto)
         .all()
     )
-
     if not pessoa_projeto:
         raise HTTPException(
             status_code=404, detail="pessoa_projeto não encontrada"

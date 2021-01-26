@@ -52,6 +52,7 @@ async def tipo_acordo_create(
     request: Request,
     tipo_acordo: TipoAcordoCreate,
     db=Depends(get_db),
+    response_model_exclude_none=True
 ):
     """
     Create a new tipoAcordo
@@ -59,6 +60,7 @@ async def tipo_acordo_create(
     try:
         db_tipo_acordo = await create_tipo_acordo(db, tipo_acordo)
         return db_tipo_acordo
+
     except Exception as e:
         raise e
 
@@ -74,7 +76,6 @@ async def tipo_acordo_edit(
     tipo_acordo_id: int,
     db=Depends(get_db),
 ):
-
     return edit_tipo_acordo(db, tipo_acordo_id, tipo_acordo)
 
 

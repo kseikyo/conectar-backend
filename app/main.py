@@ -56,9 +56,9 @@ DEV_ENV=True
 if not DEV_ENV:
     app.add_middleware(HTTPSRedirectMiddleware)
     origins = [
-    "https://conectar-frontend.vercel.app",
-    "conectar-frontend.vercel.app",
-    "https://boraconectar.com"
+        "https://conectar-frontend.vercel.app",
+        "conectar-frontend.vercel.app",
+        "https://boraconectar.com",
     ]
 
     app.add_middleware(
@@ -66,8 +66,9 @@ if not DEV_ENV:
         allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=["Content-Type", "Accept", "authorization"]
+        allow_headers=["Content-Type", "Accept", "authorization"],
     )
+
 
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
@@ -75,7 +76,6 @@ async def db_session_middleware(request: Request, call_next):
     response = await call_next(request)
     request.state.db.close()
     return response
-
 
 
 # Routers
@@ -86,8 +86,11 @@ app.include_router(
     dependencies=[Depends(get_current_active_pessoa)],
 )
 
-app.include_router(projeto_router, prefix="/api/v1",
-    tags=["projeto"],)
+app.include_router(
+    projeto_router,
+    prefix="/api/v1",
+    tags=["projeto"],
+)
 
 app.include_router(
     experiencia_prof_router,
@@ -132,7 +135,6 @@ app.include_router(
 )
 
 app.include_router(
-
     pesquisa_projeto_router,
     prefix="/api/v1",
     tags=["pesquisa_projeto"],
